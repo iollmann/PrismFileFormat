@@ -22,6 +22,9 @@ doubles. It can print them out in a more human readable form. It is also capable
 and writing a .prism file that diffs without loss against the original, at least for the two .prism 
 files I looked at, the included SRD file in the app and the larger basic one from Discord. (It needed testing.) 
 
+Language: C++
+Buids with: Xcode
+
 ## License
 This is available under the MIT license (Open Source Initiative). 
 
