@@ -13,10 +13,10 @@ I recently found Samuel Harmon's PrismScroll and PrismScrollDM apps. These are i
 and have a similar database hiding off in a discord channel. He also keeps a .prism file for the SRD
 with the app in the Resources subdirectory.  Alas, it isn't quite XML and without newlines was rather
 painful to look at in depth, but was simple enough in structure to reverse engineer in a few hours.
-It has a "rarity" tag. Yay!
+Now, I can read it. It has a "rarity" tag. Yay!
 
 ## What this software does
-The attached code (compatible with PrismScroll 6.22.0 to my limited testing) can read the file and produce
+The attached code (compatible with PrismScroll 6.22.0 to my limited testing) can read the .prism file and produce
 a hierarchy of C++ objects corresponding to sets, arrays, key-value pairs, strings, bools, ints and 
 doubles. It can print them out in a more human readable form. It is also capable of taking such trees 
 and writing a .prism file that diffs without loss against the original, at least for the two .prism 
