@@ -4,6 +4,27 @@
 //
 //  Created by Ian Ollmann on 11/7/22.
 //
+//
+// MIT license:
+//
+// Copyright 2022, Ian Ollmann
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+// files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy,
+// modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+// OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+// IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+//
+// This software does not contain code by Samuel Harmon or PrismScroll, nor is it endorsed or maintained by him in any way. This work
+// contains no copyrighted material belonging to Wizards of the Coast(TM) or Hasbro(TM).
+//
+
 
 #ifndef FileNode_h
 #define FileNode_h
@@ -13,6 +34,7 @@
 #include <string.h>
 #include <stdio.h>
 
+/*! @abstract Basic RTTI typing codes for different node types for recognition later */
 typedef enum NodeType : int8_t
 {
     NodeTypeInvalid = -1,
@@ -25,6 +47,7 @@ typedef enum NodeType : int8_t
     NodeTypeString
 }NodeType;
 
+/*! @abstract Base class for tree of data objects from deserialized file */
 class FileNode
 {
 private:
@@ -34,17 +57,27 @@ public:
     FileNode(){ next = NULL; }
     virtual ~FileNode(){ delete next; }
     
+    // Each node can be used in a single linked list
+    /*! @abstract Get the next node in the list*/
     FileNode * __nullable GetNext() const { return next;}
+    
+    /*! @abstract Set the next node in the list. Delete whatever was there before. */
     void SetNext( FileNode * __nullable newNext )
     {
         delete next;
         next = newNext;
     }
     
+    /*! @abstract Some basic RTTI */
     virtual NodeType    GetType() const = 0;
+    
+    /*! @abstract  Print human readable version */
     virtual void        Print(int indentDepth) const = 0;
+    
+    /*! @abstract Write out tree to disk */
     virtual void        write( FILE * __nonnull ) const = 0;
     
+    /*! @abstract  Read in a file from disk and create a tree of nodes */
     static FileNode * __nullable ParseFile( const char * __nonnull where, size_t size );
 };
 
@@ -54,6 +87,7 @@ static inline void Indent( int depth)
         putc( '\t', stdout);
 }
 
+/*! @abstract Implements a node which is a set of other nodes */
 class FileNodeSet : public FileNode
 {
 private:
@@ -135,6 +169,7 @@ public:
 
 };
 
+/*! @abstract Implements a node which is a array of other nodes */
 class FileNodeArray : public FileNode
 {
     const FileNode * __nullable * __nonnull nodes;
@@ -216,7 +251,7 @@ public:
 
 };
 
-
+/*! @abstract Implements a node which holds a Boolean true/false value */
 class FileNodeBoolean : public FileNode
 {
 private:
@@ -244,6 +279,8 @@ public:
 
 };
 
+/*! @abstract Implements a node which holds a integer
+ *  @bug I couldn't tell from the file format what precision this integer was supposed to have */
 class FileNodeInt : public FileNode
 {
 private:
@@ -263,6 +300,7 @@ public:
     }
 };
 
+/*! @abstract Implements a node which holds a double */
 class FileNodeDouble : public FileNode
 {
 private:
@@ -278,10 +316,8 @@ public:
     virtual void Print(int indentDepth) const {  printf( "%f", value); }
     virtual void write( FILE * __nonnull file ) const
     {
-        long pos = ftell(file);
-        if( pos == 1234566)
-            printf(".");
-        
+        // workaround for bug in MacOS wherein 0.500000 is not trimmed to 0.5
+        // for %g format, which I would therwise like to use here
         char string[30];
         int len = snprintf( string, 30, "%g", value);
 
@@ -307,6 +343,7 @@ public:
 };
 
 
+/*! @abstract Implements a node which holds a string */
 class FileNodeString : public FileNode
 {
 private:
@@ -351,6 +388,8 @@ public:
     }
 };
 
+/*! @abstract Implements a node which holds a key-value pair
+ *  @discussion A key-value pair is a value with a name (key) attached to it, so it can be found by name  */
 class FileNodeKeyValuePair : public FileNode
 {
 private:
