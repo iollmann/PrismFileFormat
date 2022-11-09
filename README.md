@@ -1,7 +1,7 @@
 # PrismFileFormat
 Low level File format access for Samuel Harmon's PrismScroll .prism files
 
-##What's this all about?
+## What's this all about?
 I find rolling random treasure for D&D 5e campaigns to be a chore. The tables in the DMG are clunky 
 and don't contain new content in later core rule books, not to mention adventures. So, it seemed
 like a iPad app or similar might be nice.  Such things are pretty easy to write. The problem is
@@ -15,14 +15,14 @@ with the app in the Resources subdirectory.  Alas, it isn't quite XML and withou
 painful to look at in depth, but was simple enough in structure to reverse engineer in a few hours.
 It has a "rarity" tag. Yay!
 
-##What this software does
+## What this software does
 The attached code (compatible with PrismScroll 6.22.0 to my limited testing) can read the file and produce
 a hierarchy of C++ objects corresponding to sets, arrays, key-value pairs, strings, bools, ints and 
 doubles. It can print them out in a more human readable form. It is also capable of taking such trees 
 and writing a .prism file that diffs without loss against the original, at least for the two .prism 
 files I looked at, the included SRD file in the app and the larger basic one from Discord. (It needed testing.) 
 
-##License
+## License
 This is available under the MIT license (Open Source Initiative). 
 
 Copyright 2022, Ian Ollmann
